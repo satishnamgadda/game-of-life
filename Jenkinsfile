@@ -19,6 +19,7 @@ pipeline {
                 archiveArtifacts artifacts: 'gameoflife-web/target/*.war', followSymlinks: false
             }
         } 
+    }
         post {
             always {
                 echo 'job completed'
@@ -38,7 +39,7 @@ pipeline {
             }
         }        
     }
-} 
+
 
 
 
