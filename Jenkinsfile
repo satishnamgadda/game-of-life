@@ -1,8 +1,11 @@
 pipeline {
-    agent { label 'JDK-11' }
+    agent { label 'JDK11' }
     stages {
         stage('vcs') {
             steps {
+                mail subject: "build started",
+                     body: "build started",
+                     to: "qtdevops@gmail.com"
                 git branch: 'REL_INT_1.0', url: 'https://github.com/wakaleo/game-of-life.git'
             }
         }
@@ -16,11 +19,24 @@ pipeline {
                 archiveArtifacts artifacts: 'gameoflife-web/target/*.war', followSymlinks: false
             }
         } 
-        stage('test results') {
-            steps {
-                junit '**/surefire-reports/*.xml'
+        post {
+            always {
+                echo 'job completed'
+                mail subject: "build completed",
+                    body: "build completed",
+                    to: "qtdevops@gmail.com"
             }
-        }
+            failure {
+                mail subject: "build failed",
+                     body: "build failed",
+                     to: "qtdevops@gmail.com"
+
+            }
+            success {
+                 junit '**/surefire-reports/*.xml'
+
+            }
+        }        
     }
 } 
 
