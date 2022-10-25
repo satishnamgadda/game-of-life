@@ -1,0 +1,8 @@
+pipeline {
+    agent { label 'JDK11' }
+    stages {
+        stage('vcs') {
+            steps 
+        }
+    }
+}
