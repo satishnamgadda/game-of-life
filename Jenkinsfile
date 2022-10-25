@@ -6,7 +6,7 @@ pipeline {
                 mail subject: "build started",
                      body: "build started",
                      to: "qtdevops@gmail.com"
-                git branch: 'REL_INT_1.0', url: 'https://github.com/wakaleo/game-of-life.git'
+                git branch: 'REL_INT_1.0', url: 'https://github.com/satishnamgadda/game-of-life.git'
             }
         }
         stage('build') {
