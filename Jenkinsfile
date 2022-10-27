@@ -39,13 +39,12 @@ pipeline {
     //           }
     //       }
     //   }
-        stage('publish build info') {
-            steps {
-               rtPublishBuildInfo(
-                serverId : "JFROG-GOL"
-               )
-            }
+    //    stage('publish build info') {
+     //       steps {
+    //           rtPublishBuildInfo(
+    //            serverId : "JFROG-GOL"
+    //           )
+     //       }
         }
     }
     
-}
