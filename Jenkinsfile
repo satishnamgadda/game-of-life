@@ -1,51 +1,47 @@
 pipeline {
-    agent  { label 'JDK11' }   
+    agent { label 'JDK11' }
     stages {
         stage('vcs') {
             steps {
-                   mail subject: 'build started',
-                     body: 'build started',
-                     to: 'qtdevops@gmail.com'
-                git branch: "REL_INT_1.0", url: 'https://github.com/satishnamgadda/game-of-life.git'
-            }
-
-        }
-        stage('artifactory configuaration') {
-            steps {
-                rtMavenDeployer (
-                   id : "MVN_DEFAULT",
-                   releaseRepo : "gol-libs-release-local",
-                   snapshotRepo : "gol-libs-snapshot-local",
-                   serverId : "JFROG-GOL"
-                )
-
+                mail subject: "build started",
+                     body: "build started",
+                     to: "qtdevops@gmail.com"
+                git branch: 'REL_INT_1.0', url: 'https://github.com/satishnamgadda/game-of-life.git'
             }
         }
-        stage('Exec Maven') {
+        stage('build') {
             steps {
-                rtMavenRun(
-                    pom : "pom.xml",
-                    goals : "clean install",
-                    tool : "mvn",
-                    deployerId : "MVN_DEFAULT"
-                )
-          
+                sh '/usr/share/maven/bin/mvn package'
             }
-        }
-       stage('Build the Code') {
+        } 
+        stage('archive artifacts') {
             steps {
-               withSonarQubeEnv('SONAR') {
-                    sh script: 'mvn clean package sonar:sonar'
-               }
-           }
-       }
-        stage('publish build info') {
-            steps {
-               rtPublishBuildInfo(
-                serverId : "JFROG-GOL"
-               )
+                archiveArtifacts artifacts: 'gameoflife-web/target/*.war', followSymlinks: false
             }
-        }
+        } 
     }
-    
-}
+        post {
+            always {
+                echo 'job completed'
+                mail subject: "build completed",
+                    body: "build completed",
+                    to: "qtdevops@gmail.com"
+            }
+            failure {
+                mail subject: "build failed",
+                     body: "build failed",
+                     to: "qtdevops@gmail.com"
+
+            }
+            success {
+                 junit '**/surefire-reports/*.xml'
+
+            }
+        }        
+    }
+
+
+
+
+
+
