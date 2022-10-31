@@ -31,15 +31,7 @@ pipeline {
                 )
           
             }
-        }
-        stage('Build the Code') {
-            steps {
-               withSonarQubeEnv('SONAR_SH') {
-                    sh script: 'mvn clean package sonar:sonar'
-               }
-            }
-        }
- 
+        } 
         stage('publish build info') {
            steps {
                rtPublishBuildInfo(
