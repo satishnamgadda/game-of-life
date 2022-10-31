@@ -16,7 +16,7 @@ pipeline {
                    id : "MVN_DEFAULT",
                    releaseRepo : "goll-libs-release-local",
                    snapshotRepo : "goll-libs-snapshot-local",
-                   serverId : "JFROG-GOL"
+                   serverId : "GOL"
                 )
 
             }
@@ -36,7 +36,7 @@ pipeline {
         stage('publish build info') {
            steps {
                rtPublishBuildInfo(
-                serverId : "JFROG-GOL"
+                serverId : "GOL"
                )
            }
         }
