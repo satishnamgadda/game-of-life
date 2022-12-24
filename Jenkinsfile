@@ -1,51 +1,22 @@
 pipeline {
-    agent  { label 'JDK11' }   
+    agent { label 'build' }
     stages {
         stage('vcs') {
             steps {
-                   mail subject: 'build started',
-                     body: 'build started',
-                     to: 'qtdevops@gmail.com'
-                git branch: "REL_INT_1.0", url: 'https://github.com/satishnamgadda/game-of-life.git'
-            }
-
-        }
-        stage('artifactory configuaration') {
-            steps {
-                rtMavenDeployer (
-                   id : "MVN_DEFAULT",
-                   releaseRepo : "goll-libs-release-local",
-                   snapshotRepo : "goll-libs-snapshot-local",
-                   serverId : "GOL"
-                )
-
+                git url: "https://github.com/satishnamgadda/game-of-life.git",
+                    branch: "REL_INT_1.0"
             }
         }
-        stage('Exec Maven') {
+        stage('buildstage') {
             steps {
-                rtMavenRun(
-                    tool : "mvn",
-                    pom : "pom.xml",
-                    goals : "clean install",
-                    deployerId : "MVN_DEFAULT"
-                )
-          
-            }
-        } 
-         stage('Build the Code') {
-            steps {
-               withSonarQubeEnv('SONAR') {
-                    sh script: 'mvn clean package sonar:sonar'
-               }
+                sh 'docker info'
+                sh 'docker image build -t satish1990/gol:1.0 .'
             }
         }
-        stage('publish build info') {
-           steps {
-               rtPublishBuildInfo(
-                serverId : "GOL"
-               )
-           }
+        stage('push') {
+            steps {
+                sh 'docker image push satish1990/gol:1.0'
+            }
         }
     }
 }
-    
